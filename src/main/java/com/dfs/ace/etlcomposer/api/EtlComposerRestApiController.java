@@ -44,7 +44,6 @@ import java.util.stream.Stream;
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
 
-
 @RestController
 @RequestMapping("/api")
 public class EtlComposerRestApiController {
@@ -55,32 +54,6 @@ public String searchUrl;
     @Autowired
     @Value("${searchUrlByPattern}")
     public String searchUrlByPattern;
-
-//    @Autowired
-//    private DSLContext dsl;
-
-//    @RequestMapping(value = "/preview/", method = RequestMethod.POST,
-//            consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public void processPreviewRequest(@RequestBody String payload){
-//
-//        String input = "[{'data1':'a1','data2':'b1'},{'data1':'a2','data2':'b\'2'}]";
-//        String output = input.replace("\'","\"");
-//        String s1 = output;
-//
-//        JSONObject json;
-//        JSONParser parser = new JSONParser();
-//        try {
-//           json  = (JSONObject) parser.parse(payload);
-//           JSONObject j = json;
-//        }
-//        catch (ParseException e){
-//
-//        }
-//    }
-
-//    @RequestMapping(value = "/preview/", method = RequestMethod.GET) //need to change this to POST
-
-//    public void processPreviewRequest(){
 
         @RequestMapping(value = "/preview/", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -96,11 +69,11 @@ public String searchUrl;
 
             }
 
-            JSONObject jsonObject = (JSONObject) object;
+            JSONObject incomingJson = (JSONObject) object;
 
-            JSONArray fields = (JSONArray) jsonObject.get("fields");
+            JSONArray fields = (JSONArray) incomingJson.get("fields");
 
-            String tableName = jsonObject.get("tableName").toString();
+            String tableName = incomingJson.get("tableName").toString();
 
             int numberOfFields = fields.size();
 
@@ -115,7 +88,7 @@ public String searchUrl;
         String sql =
         DSL.select(flds)
                 .from(table(tableName)) //here we are plugging in table name from incoming JSON
-        .getSQL();
+                .getSQL();
 
         System.out.println(sql);
 
@@ -128,71 +101,7 @@ public String searchUrl;
 //
 //        String s = sql;
 
-
-//        Pattern p = Pattern.compile(".\"d");
-//        Matcher m = p.matcher(initialOutput);
-//        String found = m.replaceAll(".'d");
-//        String finalOutput = initialOutput.replace("b\"","b'");
-//        String s1 = finalOutput;
     }
-
-//    private JSONArray fetchAll() {
-//        JSONParser jsonParser = new JSONParser();
-//        JSONArray results = new JSONArray();
-//        Object object;
-//        try {
-//            DefaultHttpClient httpClient = new DefaultHttpClient();
-//            HttpGet getRequest = new HttpGet(
-//                    searchUrl);
-//            getRequest.addHeader("accept", "application/json");
-//
-//            HttpResponse response = httpClient.execute(getRequest);
-//
-//            if (response.getStatusLine().getStatusCode() != 200) {
-//                throw new RuntimeException("Failed : HTTP error code : "
-//                        + response.getStatusLine().getStatusCode());
-//            }
-//
-//            BufferedReader br = new BufferedReader(
-//                    new InputStreamReader((response.getEntity().getContent())));
-//
-//            String output;
-//            System.out.println("Output from Server .... \n");
-//            while ((output = br.readLine()) != null) {
-//
-//                try {
-//                    object = jsonParser.parse(output);
-//                    JSONObject jsonObject = (JSONObject) object;
-//                    JSONObject outerHits =  (JSONObject) jsonObject.get("hits");
-//                    JSONArray innerHits = (JSONArray) outerHits.get("hits");
-//
-//                    if(innerHits!=null && innerHits.size()>0) {
-//                        for (int i = 0; i < innerHits.size(); i++) {
-//                            JSONObject _outerSource = (JSONObject) innerHits.get(i);
-//                            JSONObject _innerSource = (JSONObject) _outerSource.get("_source");
-//                            results.add(_innerSource);
-//                            System.out.println(_innerSource);
-//                        }
-//                    }
-//                }
-//                catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            httpClient.getConnectionManager().shutdown();
-//        }
-//        catch (ClientProtocolException e) {
-//
-//            e.printStackTrace();
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//        }
-//
-//        return results;
-//    }
 
     @RequestMapping(value = "/metadata/match/", method = RequestMethod.GET)
     @GetMapping
