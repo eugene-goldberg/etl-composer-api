@@ -66,6 +66,18 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.4</version>
         </dependency>
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>3.10.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.0.2.RELEASE</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
