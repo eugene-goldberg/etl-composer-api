@@ -78,18 +78,43 @@ public String searchUrl;
 //        }
 //    }
 
-    @RequestMapping(value = "/preview/", method = RequestMethod.GET) //need to change this to POST
-    public void processPreviewRequest(){
+//    @RequestMapping(value = "/preview/", method = RequestMethod.GET) //need to change this to POST
 
-        SelectField[] flds = new SelectField[5]; //we will count the number of fields in the incoming JSON
+//    public void processPreviewRequest(){
 
-        for (int i = 0;i<5;i++){ //here we will iterate over the fields
-            flds[i] = field("field-" + Integer.toString(i)); //here we will assign each field
+        @RequestMapping(value = "/preview/", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+        public void processPreviewRequest(@RequestBody String payload){
+
+            Object object = new Object();
+            JSONParser jsonParser = new JSONParser();
+
+            try {
+                object = jsonParser.parse(payload.toString());
+            }
+            catch (ParseException e){
+
+            }
+
+            JSONObject jsonObject = (JSONObject) object;
+
+            JSONArray fields = (JSONArray) jsonObject.get("fields");
+
+            String tableName = jsonObject.get("tableName").toString();
+
+            int numberOfFields = fields.size();
+
+        SelectField[] flds = new SelectField[numberOfFields]; //we will count the number of fields in the incoming JSON
+
+        for (int i = 0;i<numberOfFields;i++){ //here we will iterate over the fields
+            JSONObject fld = (JSONObject) fields.get(i);
+            String fieldName = fld.get("fieldName").toString();
+            flds[i] = field(fieldName); //here we will assign each field
         }
 
         String sql =
         DSL.select(flds)
-                .from(table("myTable")) //here we are plugging in table name from incoming JSON
+                .from(table(tableName)) //here we are plugging in table name from incoming JSON
         .getSQL();
 
         System.out.println(sql);
