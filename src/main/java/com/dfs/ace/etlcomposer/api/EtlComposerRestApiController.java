@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
+import static org.jooq.impl.DSL.*;
 
 @RestController
 @RequestMapping("/api")
@@ -85,9 +86,24 @@ public String searchUrl;
             flds[i] = field(fieldName); //here we will assign each field
         }
 
+            List<Condition> filterList = new ArrayList<>();
+            filterList.add(condition("column1=Y"));
+            filterList.add(condition("column2=Z"));
+
+//            List<Condition> filterList = new ArrayList<>();
+//            filterList.add(field("column1", String.class).eq(y));
+//            filterList.add(field("column2", Integer.class).eq(z));
+
+            Collection<Condition> conditions = new ArrayList<Condition>();
+
+            conditions.addAll(filterList);
+
+            Object obj = conditions;
+
         String sql =
         DSL.select(flds)
-                .from(table(tableName)) //here we are plugging in table name from incoming JSON
+                .from(table(tableName))
+                .where(conditions)
                 .getSQL();
 
         System.out.println(sql);
